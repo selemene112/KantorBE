@@ -22,4 +22,4 @@ const skemaLoginAdminValidate = Joi.object({
     .min(8),
 });
 
-module.exports = { skemaLoginAdminValidate };
+module.exports = { skemaLoginAdminValidate, skemaRegisterAdminValidate };
