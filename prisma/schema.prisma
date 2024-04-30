@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin{
+  id        String    @id @default(uuid())
+  name      String @db.VarChar(255)
+  email     String   @unique
+  password  String @db.VarChar(255)
+  photo     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  renmark Renmark[]
+
+}
+
+model Site{
+  id String @id @default(uuid())
+  siteId String @unique
+  nameLokasi String 
+  kabupaten String
+  kecamatan String
+  desa String
+  lotitude String
+  longitude String
+  penyedia String
+  sumberDayaListrik String
+  jamDayaAktif String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  mosdetail MosDetail?
+  propertisite PropertiSite?
+  status Status?
+  renmark Renmark[]
+  kontak Kontak?
+}
+
+model MosDetail{
+  id String @id @default(uuid())
+  idSite String @unique
+  site      Site @relation(fields: [idSite], references: [id])
+  antenaType String
+  antenaSN String
+  transceiverType String
+  transceiverSN String
+  modemType String
+  modemSN String
+  routerType String
+  routerSN String
+  apType String
+  apSnOne String
+  apSnTwo String
+  stabilezerType String
+  stabilezerSN String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PropertiSite{
+  id String @id @default(uuid())
+  idSite String @unique
+  site      Site @relation(fields: [idSite], references: [id])
+  finalBeam String
+  ipModem String
+  ipMikrotik String
+  ipApOne String
+  ipApTwo String
+  expSqf String
+  expRtnModCod String
+  expFwdModCod String
+  polar String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Status{
+  id String @id @default(uuid())
+  idSite String @unique
+  site      Site @relation(fields: [idSite], references: [id])
+  status   Role @default(Close)
+  durasi Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+
+}
+
+model Renmark{
+  id String @id @default(uuid())
+  idSite String 
+  site      Site @relation(fields: [idSite], references: [id])
+  message String
+  idAdmin String
+  admin Admin @relation(fields: [idAdmin],references: [id])
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Kontak{
+  id String @id @default(uuid())
+  idSite String @unique
+  site      Site @relation(fields: [idSite], references: [id])
+  namaPic String
+  noTelpon String @default("081-000-000-000")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+
+
+
+
+
+
+
+enum Role {
+  Close
+  On_Progress
+  Open
+
+}
