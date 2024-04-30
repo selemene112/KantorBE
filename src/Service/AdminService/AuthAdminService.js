@@ -18,10 +18,10 @@ const registerAdminService = async (data) => {
 const loginAdminService = async (data) => {
   try {
     const admin = await repoAuthAdmin.loginAdminRepository(data);
-    const { password, ...otherData } = admin;
+
     const hashedPassword = await BycrptMiddleware.comparePassword(
       data.password,
-      password
+      admin.password
     );
 
     if (!admin || !hashedPassword) {
