@@ -1,53 +1,53 @@
-const responNotFound = (res, message) => {
+const responNotFound = (res, message, error) => {
   return res.status(404).json({
     status: "faild",
     message: message,
-    error: message.error,
+    error: error,
     data: null,
   });
 };
 
-const responBadRequest = (res, message) => {
+const responBadRequest = (res, message, error) => {
   return res.status(400).json({
     status: "faild",
     message: message,
-    error: message.error,
+    error: error,
     data: null,
   });
 };
 
-const responeUnauthorized = (res, message) => {
+const responeUnauthorized = (res, message, error) => {
   return res.status(401).json({
     status: "faild",
     message: message,
-    error: error.message,
+    error: error,
     data: null,
   });
 };
 
-const responeForbidden = (res, message) => {
+const responeForbidden = (res, message, error) => {
   return res.status(403).json({
     status: "faild",
     message: message,
-    error: message.error,
+    error: error,
     data: null,
   });
 };
 
-const responeConflict = (res, message) => {
+const responeConflict = (res, message, error) => {
   return res.status(409).json({
     status: "faild",
     message: message,
-    error: message.error,
+    error: error,
     data: null,
   });
 };
 
-const responeServerError = (res, message) => {
+const responeServerError = (res, message, error) => {
   return res.status(500).json({
     status: "faild",
     message: message,
-    error: message.error,
+    error: error,
     data: null,
   });
 };
@@ -61,29 +61,29 @@ const responeBadGateway = (res, message, error) => {
   });
 };
 
-const responeServiceUnavailable = (res, message) => {
+const responeServiceUnavailable = (res, message, error) => {
   return res.status(503).json({
     status: "faild",
     message: message,
-    error: message.error,
+    error: error,
     data: null,
   });
 };
 
-const responeGone = (res, message) => {
+const responeGone = (res, message, error) => {
   return res.status(410).json({
     status: "faild",
     message: message,
-    error: message.error,
+    error: error,
     data: null,
   });
 };
 
-const responeNotAcceptable = (res, message) => {
+const responeNotAcceptable = (res, message, error) => {
   return res.status(406).json({
     status: "faild",
     message: message,
-    error: message.error,
+    error: error,
     data: null,
   });
 };
