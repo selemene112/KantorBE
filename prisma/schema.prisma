@@ -21,7 +21,7 @@ model Admin{
   photo     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  renmark Renmark[]
+ 
 
 }
 
@@ -101,9 +101,6 @@ model Renmark{
   idSite String 
   site      Site @relation(fields: [idSite], references: [id])
   message String
-  idAdmin String
-  admin Admin @relation(fields: [idAdmin],references: [id])
-  createdBy String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
