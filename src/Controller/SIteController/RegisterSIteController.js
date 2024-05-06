@@ -69,8 +69,80 @@ const registerSiteController = async (req, res) => {
       "Register Site Success"
     );
   } catch (error) {
-    return FaildUtility.responeUnauthorized(res, error.message, error);
+    return FaildUtility.responeServerError(res, error.message, error);
   }
 };
 
-module.exports = { registerSiteController };
+const getAllSiteController = async (req, res) => {
+  try {
+    const getAllSite = await siteService.getAllSiteService();
+    return SuccesUtility.responeSuccesOk(
+      res,
+      getAllSite,
+      "Get All Site Success"
+    );
+  } catch (error) {
+    return FaildUtility.responeServerError(res, error.message, error);
+  }
+};
+
+const getAllSiteStatusClosedController = async (req, res) => {
+  try {
+    const getAllSite = await siteService.getAllStatusCloseService();
+    return SuccesUtility.responeSuccesOk(
+      res,
+      getAllSite,
+      "Get All Site status closed Success"
+    );
+  } catch (error) {
+    return FaildUtility.responeServerError(res, error.message, error);
+  }
+};
+
+const getAllSiteStatusOpenController = async (req, res) => {
+  try {
+    const getAllSite = await siteService.getAllStatusOpenService();
+    return SuccesUtility.responeSuccesOk(
+      res,
+      getAllSite,
+      "Get All Site status open Success"
+    );
+  } catch (error) {
+    return FaildUtility.responeServerError(res, error.message, error);
+  }
+};
+
+const getAllSiteStatusOnProgressController = async (req, res) => {
+  try {
+    const getAllSite = await siteService.getAllStatusOnProgressService();
+    return SuccesUtility.responeSuccesOk(
+      res,
+      getAllSite,
+      "Get All Site status on progress Success"
+    );
+  } catch (error) {
+    return FaildUtility.responeServerError(res, error.message, error);
+  }
+};
+
+const CountAllSiteStatusController = async (req, res) => {
+  try {
+    const CountAllSite = await siteService.CountAllSiteStatusService();
+    return SuccesUtility.responeSuccesOk(
+      res,
+      CountAllSite,
+      "Count All Site Success"
+    );
+  } catch (error) {
+    return FaildUtility.responeServerError(res, error.message, error);
+  }
+};
+
+module.exports = {
+  registerSiteController,
+  getAllSiteController,
+  getAllSiteStatusClosedController,
+  getAllSiteStatusOpenController,
+  getAllSiteStatusOnProgressController,
+  CountAllSiteStatusController,
+};
