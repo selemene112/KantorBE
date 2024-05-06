@@ -1,3 +1,8 @@
+const { propertiSite } = require("../../Config/Prisma");
+const fs = require("fs");
+const csv = require("csv-parser");
+const { json } = require("express");
+
 const registerSiteRepository = async (data, prisma) => {
   try {
     const site = await prisma.site.create({
@@ -21,11 +26,20 @@ const registerSiteRepository = async (data, prisma) => {
   }
 };
 
-const getAllSiteRepository = async () => {
+const getAllSiteRepository = async (prisma) => {
   try {
-    const site = await prisma.site.findMany();
-    return site;
+    const sitedata = await prisma.Site.findMany({
+      include: {
+        propertisite: true,
+        mosdetail: true,
+        status: true,
+        kontak: true,
+        renmark: true,
+      },
+    });
+    return sitedata;
   } catch (error) {
+    console.log("ini dari repo", error);
     throw new Error(error);
   }
 };
@@ -81,10 +95,81 @@ const deleteSiteRepository = async (id) => {
   }
 };
 
+const registerDataFromCSVRepository = async (dataCSV) => {
+  try {
+    const results = await new Promise((resolve, reject) => {
+      const results = [];
+      fs.createReadStream(dataCSV)
+        .pipe(csv())
+        .on("data", (data) => results.push(data))
+        .on("end", () => resolve(results))
+        .on("error", reject);
+    });
+
+    const newData = results.map((item) => ({
+      Site: {
+        siteId: item.siteId,
+        nameLokasi: item.nameLokasi,
+        kabupaten: item.kabupaten,
+        kecamatan: item.kecamatan,
+        desa: item.desa,
+        lotitude: item.lotitude,
+        longitude: item.longitude,
+        penyedia: item.penyedia,
+        sumberDayaListrik: item.sumberDayaListrik,
+        jamDayaAktif: item.jamDayaAktif,
+      },
+      PropertiSite: {
+        finalBeam: item.finalBeam,
+        ipModem: item.ipModem,
+        ipMikrotik: item.ipMikrotik,
+        ipApOne: item.ipApOne,
+        ipApTwo: item.ipApTwo,
+        expSqf: item.expSqf,
+        expRtnModCod: item.expRtnModCod,
+        expFwdModCod: item.expFwdModCod,
+        polar: item.polar,
+      },
+      MosDetail: {
+        antenaType: item.antenaType,
+        antenaSN: item.antenaSN,
+        transceiverType: item.transceiverType,
+        transceiverSN: item.transceiverSN,
+        modemType: item.modemType,
+        modemSN: item.modemSN,
+        routerType: item.routerType,
+        routerSN: item.routerSN,
+        apType: item.apType,
+        apSnOne: item.apSnOne,
+        apSnTwo: item.apSnTwo,
+        stabilezerType: item.stabilezerType,
+        stabilezerSN: item.stabilezerSN,
+      },
+      KontakPic: {
+        namaPic: item.namaPic,
+        noTelpon: item.noTelpon,
+      },
+      Status: {
+        status: item.status,
+        durasi: +item.durasi,
+      },
+      Remark: {
+        message: item.message,
+      },
+    }));
+
+    return newData;
+  } catch (error) {
+    console.log("Dari repo", error);
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   registerSiteRepository,
   getAllSiteRepository,
   getByIdSiteRepository,
   updateSiteRepository,
   deleteSiteRepository,
+  registerDataFromCSVRepository,
 };
