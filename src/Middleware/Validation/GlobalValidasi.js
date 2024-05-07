@@ -1,5 +1,8 @@
 const { skemaKontak } = require("./Kontak/KontakValidation");
-const { skemaRegisterSiteValidate } = require("./Site/SiteValidation");
+const {
+  skemaRegisterSiteValidate,
+  skemaPagnationSiteValidate,
+} = require("./Site/SiteValidation");
 const { skemaMosDetail } = require("./MosDetail/MosDetail");
 const { skemaPropertiSite } = require("./PropertiSite/PropertiSiteValidation");
 const { skemaStatus } = require("./Status/StatusValidation");
@@ -12,6 +15,7 @@ const skemaValidation = {
   skemaPropertiSite,
   skemaStatus,
   skemaRenmark,
+  skemaPagnationSiteValidate,
 };
 
 module.exports = skemaValidation;

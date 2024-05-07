@@ -65,4 +65,22 @@ const skemaRegisterSiteValidate = Joi.object({
   }),
 });
 
-module.exports = { skemaRegisterSiteValidate };
+const skemaPagnationSiteValidate = Joi.object({
+  pageNumber: Joi.number().required().messages({
+    "number.base": "Page Number should be a number",
+    "number.empty": "Page Number cannot be empty",
+    "any.required": "Page Number is required",
+  }),
+  pageSize: Joi.number().required().messages({
+    "number.base": "Page Size should be a number",
+    "number.empty": "Page Size cannot be empty",
+    "any.required": "Page Size is required",
+  }),
+  searchCriteria: Joi.string().messages({
+    "string.base": "Search Criteria should be a string",
+    "string.empty": "Search Criteria cannot be empty",
+    "any.required": "Search Criteria is required",
+  }),
+});
+
+module.exports = { skemaRegisterSiteValidate, skemaPagnationSiteValidate };
