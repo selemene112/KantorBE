@@ -13,9 +13,13 @@ const registerRenmarkRepository = async (data, id, prisma) => {
   }
 };
 
-const getAllRenmarkRepository = async () => {
+const getAllRenmarkRepository = async (id, prisma) => {
   try {
-    const renmark = await prisma.renmark.findMany();
+    const renmark = await prisma.renmark.findMany({
+      where: {
+        idSite: id,
+      },
+    });
     return renmark;
   } catch (error) {
     console.log("ini error dari repo", error);
@@ -23,14 +27,31 @@ const getAllRenmarkRepository = async () => {
   }
 };
 
-const getByIdRenmarkRepository = async (id) => {
+const getByIdRenmarkRepository = async (id, prisma) => {
   try {
-    const renmark = await prisma.renmark.findUnique({
+    const renmark = await prisma.renmark.findMany({
       where: {
         idSite: id,
       },
     });
     return renmark;
+  } catch (error) {
+    console.log("ini error dari repo", error);
+    throw new Error(error);
+  }
+};
+
+const editRenmarkByIdRepository = async (data, id, prisma) => {
+  try {
+    const RenmarkData = await prisma.renmark.update({
+      where: {
+        id: id,
+      },
+      data: {
+        message: data.message,
+      },
+    });
+    return RenmarkData;
   } catch (error) {
     console.log("ini error dari repo", error);
     throw new Error(error);
@@ -45,7 +66,7 @@ example :
 1 site have several renmark and user need delete 1 renmark on atribut site use id 
 
 */
-const deleteRenmarkRepository = async (id) => {
+const deleteRenmarkRepository = async (id, prisma) => {
   try {
     const renmark = await prisma.renmark.delete({
       where: {
@@ -66,7 +87,7 @@ example :
 
 1 site have several renmark and user need delete all renmark on atribut site use id
 */
-const deleteAllRenmarkSite = async (id) => {
+const deleteAllRenmarkSite = async (id, prisma) => {
   try {
     const renmark = await prisma.renmark.deleteMany({
       where: {
@@ -85,4 +106,5 @@ module.exports = {
   getByIdRenmarkRepository,
   deleteRenmarkRepository,
   deleteAllRenmarkSite,
+  editRenmarkByIdRepository,
 };
