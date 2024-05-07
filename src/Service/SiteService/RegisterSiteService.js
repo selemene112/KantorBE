@@ -1,4 +1,5 @@
 const prisma = require("../../Config/Prisma");
+const { countDurasiLife } = require("../../Utility/CountDurasiLife");
 
 // =========================== Import From Repository ==============================
 
@@ -75,6 +76,14 @@ const registerSiteService = async (
 const getAllSiteService = async () => {
   try {
     const data = await SiteRepository.getAllSiteRepository(prisma);
+    data.forEach((item) => {
+      const UpdateTime = countDurasiLife(
+        item.status.status,
+        item.status.durasi,
+        item.status.updatedAt
+      );
+      item.status.durasi = UpdateTime;
+    });
     return data;
   } catch (error) {
     console.log("ini dari service", error);
@@ -84,7 +93,15 @@ const getAllSiteService = async () => {
 
 const getAllStatusCloseService = async () => {
   try {
-    const data = await StatusRepository.getAllStatusClosedRepository(prisma);
+    let data = await StatusRepository.getAllStatusClosedRepository(prisma);
+    data.forEach((item) => {
+      const UpdateTime = countDurasiLife(
+        item.status,
+        item.durasi,
+        item.updatedAt
+      );
+      item.durasi = UpdateTime;
+    });
     return data;
   } catch (error) {
     console.log("ini dari service", error);
@@ -95,6 +112,14 @@ const getAllStatusCloseService = async () => {
 const getAllStatusOpenService = async () => {
   try {
     const data = await StatusRepository.getAllStatusOpenRepository(prisma);
+    data.forEach((item) => {
+      const UpdateTime = countDurasiLife(
+        item.status,
+        item.durasi,
+        item.updatedAt
+      );
+      item.durasi = UpdateTime;
+    });
     return data;
   } catch (error) {
     console.log("ini dari service", error);
@@ -107,6 +132,14 @@ const getAllStatusOnProgressService = async () => {
     const data = await StatusRepository.getAllStatusOnProgressRepository(
       prisma
     );
+    data.forEach((item) => {
+      const UpdateTime = countDurasiLife(
+        item.status,
+        item.durasi,
+        item.updatedAt
+      );
+      item.durasi = UpdateTime;
+    });
     return data;
   } catch (error) {
     console.log("ini dari service", error);
@@ -213,12 +246,21 @@ const registerFileCSVService = async (datarepo) => {
 
 const pagnationSiteService = async (pageNumber, pageSize, searchCriteria) => {
   try {
-    const dataFromRepo = await SiteRepository.pagnationSiteRepository(
+    let dataFromRepo = await SiteRepository.pagnationSiteRepository(
       pageNumber,
       pageSize,
       searchCriteria,
       prisma
     );
+
+    dataFromRepo.data.forEach((item) => {
+      const UpdateTime = countDurasiLife(
+        item.status.status,
+        item.status.durasi,
+        item.status.updatedAt
+      );
+      item.status.durasi = UpdateTime;
+    });
 
     let totalData = dataFromRepo.total;
     let totalPage = Math.ceil(totalData / pageSize);
