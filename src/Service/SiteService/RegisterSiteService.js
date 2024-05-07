@@ -136,8 +136,6 @@ const CountAllSiteStatusService = async () => {
 };
 
 const registerFileCSVService = async (datarepo) => {
-  // const data = await SiteRepository.registerDataFromCSVRepository(datarepo);
-
   try {
     let errorArray = [];
     const results = await Promise.all(
@@ -200,10 +198,6 @@ const registerFileCSVService = async (datarepo) => {
       })
     );
 
-    console.log("Error dari array ++++++++++++++++++++++++++", errorArray);
-
-    console.log("Error dari array ++++++++++++++++++++++++++", datarepo.length);
-
     if (errorArray.length >= datarepo.length) {
       throw (error = {
         error: errorArray,
@@ -211,6 +205,37 @@ const registerFileCSVService = async (datarepo) => {
     }
 
     return results;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const pagnationSiteService = async (pageNumber, pageSize, searchCriteria) => {
+  try {
+    const dataFromRepo = await SiteRepository.pagnationSiteRepository(
+      pageNumber,
+      pageSize,
+      searchCriteria,
+      prisma
+    );
+
+    let totalData = dataFromRepo.total;
+    let totalPage = Math.ceil(totalData / pageSize);
+    let nextPage = pageNumber < totalPage ? +pageNumber + 1 : null;
+    let prevPage = pageNumber > 1 ? pageNumber - 1 : null;
+    let lastPage = totalPage;
+
+    console.log(dataFromRepo.total);
+
+    return {
+      data: dataFromRepo.data,
+      totalData: totalData,
+      totalPage: totalPage,
+      nextPage: nextPage,
+      prevPage: prevPage,
+      lastPage: lastPage,
+    };
   } catch (error) {
     console.log(error);
     throw error;
@@ -225,4 +250,5 @@ module.exports = {
   getAllStatusOnProgressService,
   CountAllSiteStatusService,
   registerFileCSVService,
+  pagnationSiteService,
 };

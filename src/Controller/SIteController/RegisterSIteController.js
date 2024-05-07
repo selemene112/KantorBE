@@ -191,6 +191,33 @@ const registerFileCSVController = async (req, res, next) => {
   }
 };
 
+const pagnationSiteController = async (req, res) => {
+  const { pageNumber, pageSize, searchCriteria } = req.query;
+  const { error } = skemaValidation.skemaPagnationSiteValidate.validate({
+    pageNumber,
+    pageSize,
+    searchCriteria,
+  });
+  if (error) {
+    return FaildUtility.responBadRequest(res, error.details[0].message);
+  }
+
+  try {
+    const pagnationServiceData = await siteService.pagnationSiteService(
+      pageNumber,
+      pageSize,
+      searchCriteria
+    );
+    return SuccesUtility.responSucccesCreated(
+      res,
+      pagnationServiceData,
+      "Success"
+    );
+  } catch (error) {
+    return FaildUtility.responeServerError(res, error.message, error);
+  }
+};
+
 module.exports = {
   registerSiteController,
   getAllSiteController,
@@ -199,4 +226,5 @@ module.exports = {
   getAllSiteStatusOnProgressController,
   CountAllSiteStatusController,
   registerFileCSVController,
+  pagnationSiteController,
 };

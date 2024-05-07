@@ -34,4 +34,6 @@ routeSite.post(
   upload.single("file"),
   SiteCOntroller.registerFileCSVController
 );
+
+routeSite.get("/SearchSIte", SiteCOntroller.pagnationSiteController);
 module.exports = routeSite;

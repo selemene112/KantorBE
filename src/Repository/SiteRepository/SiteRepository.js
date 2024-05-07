@@ -165,6 +165,52 @@ const registerDataFromCSVRepository = async (dataCSV) => {
   }
 };
 
+const pagnationSiteRepository = async (
+  pageNumber,
+  pageSize,
+  searchCriteria,
+  prisma
+) => {
+  let page = parseInt(pageSize) || 1;
+  try {
+    const skip = (pageNumber - 1) * pageSize;
+    let where = {}; // Save Object for save momery filter
+
+    if (searchCriteria) {
+      where = {
+        OR: [{ nameLokasi: { contains: searchCriteria } }],
+      };
+    }
+
+    const ResultSitePagnation = await prisma.Site.findMany({
+      skip,
+      take: page,
+      orderBy: {
+        createdAt: "desc",
+      },
+      where,
+      include: {
+        propertisite: true,
+        mosdetail: true,
+        status: true,
+        kontak: true,
+        renmark: true,
+      },
+    });
+
+    const totalSite = await prisma.Site.count({
+      where,
+    });
+
+    return {
+      data: ResultSitePagnation,
+      total: totalSite,
+    };
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   registerSiteRepository,
   getAllSiteRepository,
@@ -172,4 +218,6 @@ module.exports = {
   updateSiteRepository,
   deleteSiteRepository,
   registerDataFromCSVRepository,
+
+  pagnationSiteRepository,
 };
