@@ -1,3 +1,5 @@
+const fs = require("fs");
+const csv = require("csv-parser");
 //========================================= Call Utility =================================
 const SuccesUtility = require("../../Utility/Response/Succes/SuccesUtility");
 const FaildUtility = require("../../Utility/Response/Faild/FaildUtility");
@@ -10,6 +12,8 @@ const siteService = require("../../Service/SiteService/RegisterSiteService");
 
 // ======================================== Call Validate =================================
 const skemaValidation = require("../../Middleware/Validation/GlobalValidasi");
+const site = require("../../Repository/SiteRepository/SiteRepository");
+const { json } = require("express");
 // const {
 //   skemaStatus,
 // } = require("../../Middleware/Validation/Status/StatusValidation");
@@ -138,6 +142,55 @@ const CountAllSiteStatusController = async (req, res) => {
   }
 };
 
+const registerFileCSVController = async (req, res, next) => {
+  const data = req.file.path;
+  const dataRepo = await site.registerDataFromCSVRepository(data);
+  const validateInputCsv = await Promise.all(
+    dataRepo.map(async (item) => {
+      const validations = [
+        { name: item.Site, schema: skemaValidation.skemaRegisterSiteValidate },
+        { name: item.PropertiSite, schema: skemaValidation.skemaPropertiSite },
+        { name: item.MosDetail, schema: skemaValidation.skemaMosDetail },
+        { name: item.KontakPic, schema: skemaValidation.skemaKontak },
+        { name: item.Status, schema: skemaValidation.skemaStatus },
+        { name: item.Renmark, schema: skemaValidation.skemaRenmark },
+      ];
+
+      let combinedErrors = { messages: [] };
+
+      validations.forEach(({ name, schema }) => {
+        let { error } = schema.validate(eval(name));
+        if (error) {
+          combinedErrors.messages.push(error.details[0].message);
+        }
+      });
+      if (combinedErrors.messages.length > 0) {
+        console.log(combinedErrors);
+        return combinedErrors;
+      }
+
+      return null;
+    })
+  );
+
+  const cleanedArray = validateInputCsv.filter((item) => item !== null);
+  if (cleanedArray.length > 0) {
+    let error = new Error("Validation failed");
+    error.details = cleanedArray;
+
+    return FaildUtility.responeUnauthorized(res, "Fix Your Input First", error);
+  }
+
+  try {
+    const dataJsonComvert = await siteService.registerFileCSVService(dataRepo);
+
+    return SuccesUtility.responSucccesCreated(res, dataJsonComvert, "Success");
+  } catch (error) {
+    console.log(error);
+    return FaildUtility.responeServerError(res, error.message, error);
+  }
+};
+
 module.exports = {
   registerSiteController,
   getAllSiteController,
@@ -145,4 +198,5 @@ module.exports = {
   getAllSiteStatusOpenController,
   getAllSiteStatusOnProgressController,
   CountAllSiteStatusController,
+  registerFileCSVController,
 };
