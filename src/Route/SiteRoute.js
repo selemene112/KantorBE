@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const routeSite = Router();
+const upload = require("../Middleware/Multer/Multer");
 
 const SiteCOntroller = require("../Controller/SIteController/RegisterSIteController");
 
@@ -27,4 +28,10 @@ routeSite.get(
 //Count all site status
 routeSite.get("/countallsite", SiteCOntroller.CountAllSiteStatusController);
 
+//Register File CSV
+routeSite.post(
+  "/registerfilecsv",
+  upload.single("file"),
+  SiteCOntroller.registerFileCSVController
+);
 module.exports = routeSite;
